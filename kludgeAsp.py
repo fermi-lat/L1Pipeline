@@ -23,6 +23,8 @@ if not dlId: head, dlId = os.path.split(head)
 
 os.environ['nDownlink'] = os.environ['DOWNLINK_ID']
 os.environ['folder'] = config.dataCatDir
+os.environ['PIPELINESERVER'] = 'DEV'
+
 cmd = config.aspLauncher
 
 status = runner.run(cmd)

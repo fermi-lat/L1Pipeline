@@ -27,17 +27,19 @@ import runner
 
 
 def cleanup(status, idArgs, **extra):
+    print >> sys.stderr, 'Calling findChunks::cleanup with status=',status
     if not status: return status
+    # This is a hack to prevent findChunks to remove the lock files created by lockRun!
     myStatus = 0
-    
-    dlId, runId = idArgs[:2]
-    runDir = fileNames.fileName(None, *idArgs)
-    lockFile.unlockDir(runDir, runId, dlId)
-
-    action = os.environ.get('l1LockAction', 'LockDirOnly')    
-    if "Throttle" in action: lockFile.unlockThrottle(dlId, runId)
-
     return myStatus
+    #dlId, runId = idArgs[:2]
+    #runDir = fileNames.fileName(None, *idArgs)
+    #lockFile.unlockDir(runDir, runId, dlId)
+
+    #action = os.environ.get('l1LockAction', 'LockDirOnly')    
+    #if "Throttle" in action: lockFile.unlockThrottle(dlId, runId)
+
+    #return myStatus
 
 
 def findChunks(idArgs, **extra):

@@ -52,6 +52,8 @@ L1Xml = os.path.join(L1ProcROOT, 'xml')
 L1Data = os.path.join(L1ProcROOT, 'data')
 
 LATCalibRoot = '/sdf/group/fermi/ground/releases/calibrations/'
+#LATMonRoot = '/sdf/group/fermi/ground/releases/monitor/'
+LATMonRoot = '/sdf/data/fermi/a/ground/releases/monitor/'
 
 calibFlavors = { # not using this now, have separate JO files for LPA & MC
     'LPA': {
@@ -235,12 +237,22 @@ maxDbWait = 120
 scid = 77
 hpTaskBase = '/afs/slac/g/glast/isoc/flightOps/offline/halfPipe/prod'
 
-l0Archive = '/sdf/group/fermi/n/u23/ISOC-flight/Archive/level0'
+if testMode:
+    isocLoc = 'test'
+else:
+    isocLoc = 'flight'
+    pass
+
+l0ArchiveHead = '/sdf/data/fermi/ground/ISOC'
+l0ArchiveTail = 'Archive/level0'
+l0Archive = os.path.join(l0ArchiveHead, isocLoc, l0ArchiveTail)
 
 if testMode:
     aspLauncher = '/bin/true'
+    aspLauncher = '/sdf/group/fermi/ground/PipelineConfig/ASP/ASP_at_S3DF/pipeline_scripts/asp_launcher.sh' 
 else:
-    aspLauncher = '/afs/slac/g/glast/ground/links/data/ASP/aspLauncher.sh'
+    #aspLauncher = '/afs/slac/g/glast/ground/links/data/ASP/aspLauncher.sh'
+    aspLauncher = '/sdf/group/fermi/ground/PipelineConfig/ASP/ASP_at_S3DF/pipeline_scripts/asp_launcher.sh'
     pass
 aspAlreadyLaunched = 160
 
@@ -642,12 +654,14 @@ retries = os.environ.get('L1Retries', defaultRetries)
 # container settings parameters 
 #
 container_image = '/sdf/group/fermi/sw/containers/fermi-rhel6.sif'
-bind_mounts = '-B /sdf:/sdf -B /sdf/group/fermi/a:/afs/slac/g/glast'
-bind_afs_twice = '-B /sdf/group/fermi/a:/afs/slac.stanford.edu/g/glast'
-bind_package = '-B /sdf/group/fermi/sw/package:/afs/slac/package'
-bind_pkg_twice = '-B /sdf/group/fermi/sw/package:/afs/slac.stanford.edu/package'
-bind_TWW_mysql = '-B /sdf/group/fermi/sw/containers/rhel6/opt/TWWfsw:/opt/TWWfsw'
-container_volumes = ' '.join([bind_mounts, bind_afs_twice, bind_package, bind_pkg_twice, bind_TWW_mysql])
+bind_mounts     = '-B /sdf:/sdf -B /sdf/group/fermi/a:/afs/slac/g/glast'
+bind_afs_twice  = '-B /sdf/group/fermi/a:/afs/slac.stanford.edu/g/glast'
+bind_package    = '-B /sdf/group/fermi/sw/package:/afs/slac/package'
+bind_pkg_twice  = '-B /sdf/group/fermi/sw/package:/afs/slac.stanford.edu/package'
+bind_TWW_mysql  = '-B /sdf/group/fermi/sw/containers/rhel6/opt/TWWfsw:/opt/TWWfsw'
+bind_Java       = '-B /sdf/group/fermi/sw/java/jdk/jdk8:/usr/lib/jvm/jre-1.8.0-openjdk'
+
+container_volumes = ' '.join([bind_mounts, bind_afs_twice, bind_package, bind_pkg_twice, bind_TWW_mysql, bind_Java])
 container_exec = 'singularity exec --env LD_LIBRARY_PATH=${LD_LIBRARY_PATH}'
 
 # default option for stageSet input exclusion filter

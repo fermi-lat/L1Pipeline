@@ -53,11 +53,13 @@ app = config.apps['tkrMonitor']
 l1Setup = config.l1Setup
 instDir = config.L1Build
 glastExt = config.glastExt
+monRoot = config.LATMonRoot
 
 cmd = """
 cd %(workDir)s
 export INST_DIR=%(instDir)s 
 export GLAST_EXT=%(glastExt)s
+export LATMonRoot=%(monRoot)s
 source %(l1Setup)s
 %(python)s %(app)s %(stagedInFile)s %(stagedMonFile)s %(htmlDir)s %(stagedAlarmFile)s %(logFile)s
 """ % locals()

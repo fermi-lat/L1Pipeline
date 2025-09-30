@@ -44,10 +44,12 @@ def query(runs, fields):
     print >> sys.stderr, cmd
     
     connectString = config.connectString
-    print >> sys.stderr, 'Connecting to %s' % connectString
-
+    print >> sys.stderr, 'Connecting to %s. Will try %d times' % (connectString, config.dbRetries)
+    dbOk = False
+    results=[]
+    lenRes = len(results)>0
     for retry in range(config.dbRetries):
-        print >> sys.stderr, 'Attempt %s' % (retry+1)
+        print >> sys.stderr, 'Attempt %s , dbOk = %s, lenRes=%s' % (retry+1, dbOk, lenRes)
         try:
             if retry: waitABit()
             dbOk = False
@@ -56,17 +58,24 @@ def query(runs, fields):
             stuff = cur.execute(cmd)
             results = cur.fetchall()
             con.close()
-            dbOk = True
-            break
+            dbOk   = True
+            lenRes = len(results)>0
+            if lenRes: break
+            else: continue
         except:
+            dbOk = False
             traceback.print_exc()
             continue
         continue
     print >> sys.stderr, 'Status %s after %d tries.' % (dbOk, retry+1)
     if not dbOk: raise acqError
 
+    print >> sys.stderr, 'results = ', results
+    
     dResults = dict((row[0], row[1:]) for row in results)
 
+    print >> sys.stderr, 'dResults = ', dResults
+    
     return dResults
 
 
