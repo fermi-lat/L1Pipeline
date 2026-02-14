@@ -9,7 +9,7 @@ import os
 import sys
 
 L1Name = os.environ.get('L1_TASK_NAME') or "L1Proc"
-L1Version = os.environ.get('PIPELINE_TASKVERSION') or os.environ.get('L1_TASK_VERSION') or "6.0"
+L1Version = os.environ.get('PIPELINE_TASKVERSION') or os.environ.get('L1_TASK_VERSION') or "6.1"
 fullTaskName = '-'.join([L1Name, L1Version])
 installRoot = os.environ.get('L1_INSTALL_DIR') or "/sdf/group/fermi/ground/PipelineConfig/L1Proc"
 
@@ -224,8 +224,7 @@ fastCopyCfg = os.path.join(fastCopyOut, 'outgoing.ini')
 if mode == 'prod':
     connectString = '/@isocflight'
 else:
-    # connectString = '/@isocnightly'
-    connectString = '/@isocflight'
+    connectString = '/@isoc-test'
     pass
 acqTable = 'GLASTOPS_ACQSUMMARY'
 
@@ -701,4 +700,4 @@ nameManglingPrefix = 'L1'
 
 
 if __name__ == "__main__":
-    print L1ProcROOT
+    print (L1ProcROOT)
