@@ -52,7 +52,6 @@ L1Xml = os.path.join(L1ProcROOT, 'xml')
 L1Data = os.path.join(L1ProcROOT, 'data')
 
 LATCalibRoot = '/sdf/group/fermi/ground/releases/calibrations/'
-#LATMonRoot = '/sdf/group/fermi/ground/releases/monitor/'
 LATMonRoot = '/sdf/data/fermi/a/ground/releases/monitor/'
 
 calibFlavors = { # not using this now, have separate JO files for LPA & MC
