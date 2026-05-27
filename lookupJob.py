@@ -30,7 +30,8 @@ folders = {
 
 mode = os.environ.get('dataCatMode') or config.mode
 
-datacat = '''/afs/slac.stanford.edu/u/gl/glast/datacat/%s/datacat find --group %s --filter 'Name=="%s"'  --show-unscanned-locations   --show-non-ok-locations  %s '''
+#datacat = '''/afs/slac.stanford.edu/u/gl/glast/datacat/%s/datacat find --group %s --filter 'Name=="%s"'  --show-unscanned-locations   --show-non-ok-locations  %s '''
+datacat = '''/sdf/home/g/glast/a/datacat/%s/datacat find --group %s --filter 'Name=="%s"'  --show-unscanned-locations   --show-non-ok-locations  %s '''
 
 then = time.time()
 print >> sys.stderr, then

@@ -8,18 +8,49 @@
 import os
 import sys
 
-L1Name = os.environ.get('L1_TASK_NAME') or "L1Proc"
-L1Version = os.environ.get('PIPELINE_TASKVERSION') or os.environ.get('L1_TASK_VERSION') or "6.1"
+L1Name       = os.environ.get('L1_TASK_NAME') or "L1Proc"
+L1Version    = os.environ.get('PIPELINE_TASKVERSION') or os.environ.get('L1_TASK_VERSION') or "6.2"
 fullTaskName = '-'.join([L1Name, L1Version])
-installRoot = os.environ.get('L1_INSTALL_DIR') or "/sdf/group/fermi/ground/PipelineConfig/L1Proc"
+installRoot  = os.environ.get('L1_INSTALL_DIR') or "/sdf/group/fermi/ground/PipelineConfig/L1Proc"
+creator      = '-'.join([L1Name, L1Version])
+L1BuildBase  = os.environ.get('L1_BUILD_DIR') or "/sdf/group/fermi/ground/PipelineBuilds/L1Proc"
+L1Build      = os.path.join(L1BuildBase, L1Version)
 
-creator = '-'.join([L1Name, L1Version])
+doCleanup    = True
+
+# definition of useful functions
+
+def get_pipeline_mode():
+    """Get pipeline mode from environment variables, defaulting to 'dev'."""
+    VALID_MODES = set(['dev', 'prod'])
     
-L1BuildBase = os.environ.get('L1_BUILD_DIR') or "/sdf/group/fermi/ground/PipelineBuilds/L1Proc"
-L1Build = os.path.join(L1BuildBase, L1Version)
+    # Try PIPELINE_MODE first
+    mode = os.environ.get('PIPELINE_MODE')
+    if mode and mode in VALID_MODES:
+        return mode
+    elif mode:
+        print >> sys.stderr, 'Invalid PIPELINE_MODE: %s. Must be dev or prod.' % mode
+    
+    # Try extracting from PIPELINE_FROMADDRESS
+    pfa = os.environ.get('PIPELINE_FROMADDRESS')
+    if pfa:
+        try:
+            mode = pfa.split('@')[0].split('-')[1]
+            if mode in VALID_MODES:
+                return mode
+            else:
+                print >> sys.stderr, 'Invalid mode from PIPELINE_FROMADDRESS: %s. Must be dev or prod.' % mode
+        except IndexError:
+            print >> sys.stderr, 'Invalid PIPELINE_FROMADDRESS format.'
+    else:
+        print >> sys.stderr, 'PIPELINE_MODE and PIPELINE_FROMADDRESS not set.'
+    
+    # Default to 'dev'
+    return 'dev'
 
-doCleanup = True
+mode = get_pipeline_mode()
 
+'''
 mode = False
 if not mode:
     try:
@@ -39,12 +70,15 @@ if not mode:
 if not mode:
     mode = 'dev'
     pass
+'''
+
 mode = mode.lower()
 if mode in ['prod']:
     testMode = False
 else:
     testMode = True
     pass
+
 print >> sys.stderr, "Test mode: %s" % testMode
 
 L1ProcROOT = os.path.join(installRoot, L1Version)
@@ -95,7 +129,7 @@ baseVersion = 0
 
 #throttle parameters
 throttleDir =  os.path.join(L1Output, 'throttle')
-throttleLimit = 6
+throttleLimit = 10
 
 if testMode:
     stageBase = 'l1Test'
@@ -249,8 +283,7 @@ if testMode:
     aspLauncher = '/bin/true'
     aspLauncher = '/sdf/group/fermi/ground/PipelineConfig/ASP/ASP_at_S3DF/pipeline_scripts/asp_launcher.sh' 
 else:
-    #aspLauncher = '/afs/slac/g/glast/ground/links/data/ASP/aspLauncher.sh'
-    aspLauncher = '/sdf/group/fermi/ground/PipelineConfig/ASP/ASP_at_S3DF/pipeline_scripts/asp_launcher.sh'
+    aspLauncher = '/sdf/group/fermi/ground/PipelineConfig/ASP/ASP_at_S3DF-PROD/pipeline_scripts/asp_launcher.sh'
     pass
 aspAlreadyLaunched = 160
 
@@ -621,6 +654,9 @@ ppComponents = [
     ]
 pythonPath = ':'.join(ppComponents)
 sys.path.extend(ppComponents)
+#sys.path.insert(0, pythonPath)
+#print pythonPath
+
 
 # make directories world-writeable when testing
 if testMode:
@@ -628,6 +664,7 @@ if testMode:
         import fileOps
         fileOps.dirMode = 0777
     except ImportError:
+        print '--arg!'
         pass
     pass
 try:

@@ -11,10 +11,9 @@ import fileNames
 import variables
 
 #os.chdir(config.L1ProcROOT) # ?
-
 #taskNames = ['forceL1Merge', 'L1Proc', 'noReconMerge', 'setL1Status', 'flagFT2']
 #taskNames = ['L1ProcS3df','testVerifyS3df']
-taskNames = ['L1ProcS3DF']
+#taskNames = ['L1ProcS3DF']
 taskNames = ['flagFT2S3DF']
 
 scriptNames = {

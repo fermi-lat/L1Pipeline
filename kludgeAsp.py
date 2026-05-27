@@ -23,9 +23,16 @@ if not dlId: head, dlId = os.path.split(head)
 
 os.environ['nDownlink'] = os.environ['DOWNLINK_ID']
 os.environ['folder'] = config.dataCatDir
-os.environ['PIPELINESERVER'] = 'DEV'
+
+if config.testMode: 
+    os.environ['PIPELINESERVER'] = 'DEV'
+else:
+    os.environ['PIPELINESERVER'] = 'PROD'
+    pass
+
 
 cmd = config.aspLauncher
+#sys.exit(1)
 
 status = runner.run(cmd)
 

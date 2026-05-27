@@ -65,8 +65,8 @@ cmd = """eval `%(isocBin)s/isoc env --add-env=flightops`
 ISOC_SITEDEP=%(outCfg)s FASTCopy.py %(send)s %(args)s
 """ % locals()
 #disable the fastcopy to avoid too much logging...
-#status = runner.run(cmd)
-status=0
+if not config.testMode: status = runner.run(cmd)
+#status=0
 if status: finishOption = 'wipe'
 
 exportTime = time.time()
